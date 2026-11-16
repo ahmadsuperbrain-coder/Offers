@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Available Offers</title>
+<meta name="description" content="Explore available offers and discover exciting opportunities.">
+<meta name="theme-color" content="#101827">
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0
+}
+
+body{
+ font-family:Arial,sans-serif;
+ background:#f3f5f9;
+ color:#202938;
+ line-height:1.5
+}
+
+.header{
+ background:#101827;
+ color:white;
+ padding:25px 15px;
+ text-align:center
+}
+
+.header h1{
+ font-size:23px;
+ margin-bottom:5px
+}
+
+.header p{
+ font-size:13px;
+ color:#cbd5e1
+}
+
+.container{
+ max-width:750px;
+ width:93%;
+ margin:25px auto
+}
+
+.intro{
+ text-align:center;
+ margin-bottom:22px
+}
+
+.intro h2{
+ font-size:21px;
+ margin-bottom:6px
+}
+
+.intro p{
+ font-size:13px;
+ color:#778194
+}
+
+.stats{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ background:white;
+ padding:14px 16px;
+ border:1px solid #e7eaf0;
+ border-radius:10px;
+ margin-bottom:16px;
+ font-size:13px
+}
+
+#offerCount{
+ font-weight:bold;
+ color:#1769ff
+}
+
+#offers{
+ display:flex;
+ flex-direction:column;
+ gap:15px
+}
+
+.offer-card{
+ background:white;
+ border:1px solid #e6eaf0;
+ border-radius:13px;
+ padding:15px;
+ box-shadow:0 3px 13px #00000007;
+ animation:cardEnter .5s ease both
+}
+
+@keyframes cardEnter{
+ from{
+  opacity:0;
+  transform:translateY(18px)
+ }
+ to{
+  opacity:1;
+  transform:translateY(0)
+ }
+}
+
+.offer-top{
+ display:flex;
+ align-items:center;
+ gap:13px
+}
+
+.offer-icon{
+ width:65px;
+ height:65px;
+ flex-shrink:0;
+ border-radius:12px;
+ object-fit:cover;
+ background:#edf0f5;
+ border:1px solid #eee
+}
+
+.offer-main{
+ flex:1;
+ min-width:0
+}
+
+.offer-main h3{
+ font-size:16px;
+ margin-bottom:4px;
+ overflow-wrap:anywhere
+}
+
+.offer-id{
+ color:#929aaa;
+ font-size:11px
+}
+
+.offer-anchor{
+ font-size:13px;
+ color:#525f70;
+ margin-top:12px
+}
+
+.conversion{
+ background:#f5f7fa;
+ border-radius:8px;
+ padding:11px;
+ margin-top:11px;
+ font-size:12px;
+ color:#596579
+}
+
+.conversion strong{
+ display:block;
+ color:#283548;
+ margin-bottom:3px
+}
+
+/* AUTOMATIC ANIMATED BUTTON */
+.offer-btn{
+ display:block;
+ width:100%;
+ text-align:center;
+ background:linear-gradient(120deg,#1769ff,#0645c7);
+ color:white;
+ text-decoration:none;
+ padding:15px;
+ border-radius:9px;
+ margin-top:17px;
+ font-size:14px;
+ font-weight:bold;
+ letter-spacing:.5px;
+ position:relative;
+ box-shadow:0 5px 20px #1769ff55;
+ animation:attention 1.2s ease-in-out infinite;
+ transition:background .3s;
+}
+
+@keyframes attention{
+ 0%,100%{
+  transform:scale(1) translateY(0);
+  box-shadow:0 5px 15px #1769ff55
+ }
+ 25%{
+  transform:scale(1.045) translateY(-3px);
+  box-shadow:0 8px 24px #1769ff99
+ }
+ 50%{
+  transform:scale(1) translateY(0)
+ }
+ 75%{
+  transform:scale(1.045) translateY(-3px);
+  box-shadow:0 8px 24px #1769ff99
+ }
+}
+
+.offer-btn:hover{
+ background:#0645c7
+}
+
+.offer-btn:active{
+ transform:scale(.94)
+}
+
+/* LOADING */
+.loading,.error,.empty{
+ background:white;
+ border-radius:10px;
+ padding:25px 15px;
+ text-align:center;
+ color:#687386;
+ font-size:13px
+}
+
+.spinner{
+ width:30px;
+ height:30px;
+ border:3px solid #e5eaf2;
+ border-top-color:#1769ff;
+ border-radius:50%;
+ margin:0 auto 12px;
+ animation:spin .8s linear infinite
+}
+
+@keyframes spin{
+ to{transform:rotate(360deg)}
+}
+
+/* DISCLAIMER */
+.disclaimer{
+ background:#fff8e8;
+ border:1px solid #f3dfae;
+ border-radius:10px;
+ padding:15px;
+ margin-top:22px;
+ color:#72551b;
+ font-size:12px;
+ line-height:1.7
+}
+
+.disclaimer strong{
+ display:block;
+ font-size:13px;
+ margin-bottom:5px;
+ color:#634710
+}
+
+.footer{
+ text-align:center;
+ padding:22px 15px;
+ font-size:11px;
+ color:#929aaa
+}
+
+@media(max-width:400px){
+ .offer-icon{
+  width:55px;
+  height:55px
+ }
+ .offer-main h3{
+  font-size:14px
+ }
+ .offer-card{
+  padding:12px
+ }
+}
+
+@media(prefers-reduced-motion:reduce){
+ .offer-btn,.offer-card,.spinner{
+  animation:none!important
+ }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+ <h1>Discover Available Offers</h1>
+ <p>Explore offers and follow the instructions to participate.</p>
+</header>
+
+<main class="container">
+
+ <div class="intro">
+  <h2>Featured Offers</h2>
+  <p>Choose an offer below to view its details and instructions.</p>
+ </div>
+
+ <div class="stats">
+  <span>Available Offers</span>
+  <span id="offerCount">Loading...</span>
+ </div>
+
+ <div id="offers">
+  <div class="loading">
+   <div class="spinner"></div>
+   Loading offers...
+  </div>
+ </div>
+
+ <!-- DISCLAIMER -->
+ <div class="disclaimer">
+  <strong>⚠️ Disclaimer</strong>
+  These offers are provided by independent third-party advertising
+  partners. We do not own, operate, or control the advertised
+  products and services. Please read each offer's terms,
+  eligibility requirements, and privacy policy before participating.
+  Participation is voluntary. Any rewards or payments are subject
+  to the advertiser's approval and conditions. We are not responsible
+  for third-party content, services, or claims.
+ </div>
+
+</main>
+
+<footer class="footer">
+ <p>© <span id="year"></span> Available Offers. All rights reserved.</p>
+ <p>Offers are provided by third-party advertising partners.</p>
+</footer>
+
+<script>
+(function(){
+
+"use strict";
+
+/* CPA API SETTINGS */
+const API="https://dtvpp42hfuyb2.cloudfront.net";
+const USER_ID="815457";
+const API_KEY="376e7fe38ff33269d849fc84b9079cb4";
+const SUB2="u815457";
+const MAX_OFFERS=10;
+
+/* VISITOR ID */
+function getVisitorID(){
+ try{
+  let id=localStorage.getItem("cpa_visitor_id");
+
+  if(!id){
+   id="visitor_"+Date.now().toString(36)+
+   Math.random().toString(36).slice(2,12);
+
+   localStorage.setItem("cpa_visitor_id",id);
+  }
+
+  return id;
+ }catch(e){
+  return "visitor_"+Date.now().toString(36);
+ }
+}
+
+/* ELEMENTS */
+const offersBox=document.getElementById("offers");
+const offerCount=document.getElementById("offerCount");
+
+document.getElementById("year").textContent=
+ new Date().getFullYear();
+
+/* CREATE OFFER */
+function createOffer(offer,index){
+
+ const card=document.createElement("article");
+ card.className="offer-card";
+ card.style.animationDelay=(index*0.08)+"s";
+
+ const top=document.createElement("div");
+ top.className="offer-top";
+
+ const icon=document.createElement("img");
+ icon.className="offer-icon";
+ icon.src=offer.network_icon||"";
+ icon.alt=offer.name||"Offer icon";
+ icon.loading="lazy";
+
+ icon.onerror=function(){
+  this.style.visibility="hidden";
+ };
+
+ const main=document.createElement("div");
+ main.className="offer-main";
+
+ const name=document.createElement("h3");
+ name.textContent=offer.name||"Available Offer";
+
+ const id=document.createElement("div");
+ id.className="offer-id";
+ id.textContent="Offer ID: "+(offer.id||"N/A");
+
+ main.appendChild(name);
+ main.appendChild(id);
+
+ top.appendChild(icon);
+ top.appendChild(main);
+
+ const anchor=document.createElement("p");
+ anchor.className="offer-anchor";
+ anchor.textContent=offer.anchor||"Explore this offer.";
+
+ const conversion=document.createElement("div");
+ conversion.className="conversion";
+
+ const conversionTitle=document.createElement("strong");
+ conversionTitle.textContent="How to Complete";
+
+ const conversionText=document.createElement("span");
+ conversionText.textContent=offer.conversion||
+ "Follow the instructions on the offer page.";
+
+ conversion.appendChild(conversionTitle);
+ conversion.appendChild(conversionText);
+
+ const button=document.createElement("a");
+ button.className="offer-btn";
+ button.href=offer.url;
+ button.target="_blank";
+ button.rel="noopener noreferrer";
+ button.textContent="VIEW OFFER  →";
+
+ card.appendChild(top);
+ card.appendChild(anchor);
+ card.appendChild(conversion);
+ card.appendChild(button);
+
+ return card;
+}
+
+/* DISPLAY OFFERS */
+function displayOffers(data){
+
+ let list=Array.isArray(data)?data:
+  (data&&Array.isArray(data.offers)?data.offers:[]);
+
+ list=list.filter(item=>
+  item&&typeof item.url==="string"&&
+  /^https?:\/\//i.test(item.url)
+ );
+
+ list=list.slice(0,MAX_OFFERS);
+
+ offersBox.innerHTML="";
+ offerCount.textContent=list.length+" Offers";
+
+ if(!list.length){
+  offersBox.innerHTML=
+   '<div class="empty">No offers available right now.</div>';
+  return;
+ }
+
+ list.forEach((offer,index)=>{
+  offersBox.appendChild(createOffer(offer,index));
+ });
+}
+
+/* LOAD OFFERS */
+function loadOffers(){
+
+ const callback="cpaOffers_"+Date.now();
+ const script=document.createElement("script");
+
+ const url=API+"/public/offers/feed.php"+
+ "?user_id="+encodeURIComponent(USER_ID)+
+ "&api_key="+encodeURIComponent(API_KEY)+
+ "&s1="+encodeURIComponent(getVisitorID())+
+ "&s2="+encodeURIComponent(SUB2);
+
+ let finished=false;
+
+ function cleanup(){
+  delete window[callback];
+  script.remove();
+ }
+
+ function showError(message){
+  offerCount.textContent="0 Offers";
+  offersBox.innerHTML="";
+
+  const error=document.createElement("div");
+  error.className="error";
+  error.textContent=message;
+
+  offersBox.appendChild(error);
+ }
+
+ const timeout=setTimeout(()=>{
+  if(finished)return;
+
+  finished=true;
+  cleanup();
+
+  showError("Request timed out. Please refresh the page.");
+ },15000);
+
+ window[callback]=function(data){
+  if(finished)return;
+
+  finished=true;
+  clearTimeout(timeout);
+  cleanup();
+
+  displayOffers(data);
+ };
+
+ script.onerror=function(){
+  if(finished)return;
+
+  finished=true;
+  clearTimeout(timeout);
+  cleanup();
+
+  showError("Unable to load offers. Please try again.");
+ };
+
+ script.src=url+"&callback="+encodeURIComponent(callback);
+ document.head.appendChild(script);
+}
+
+loadOffers();
+
+})();
+</script>
+
+</body>
+</html>
