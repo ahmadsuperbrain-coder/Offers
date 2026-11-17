@@ -1090,6 +1090,92 @@ loadNovels();
 loadOffers();
 loadStickyOffers();
 
+(async function checkVPN() {
+  const blocker = document.getElementById("vpnBlocker");
+
+  // Hide the page until the VPN check finishes
+  document.documentElement.style.visibility = "hidden";
+
+  try {
+    const response = await fetch(
+      "https://ipapi.co/json/",
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) throw new Error("VPN check failed");
+
+    const data = await response.json();
+
+    if (data.proxy === true || data.threat === true) {
+      blocker.style.display = "flex";
+    } else {
+      blocker.style.display = "none";
+      document.documentElement.style.visibility = "visible";
+    }
+
+  } catch (error) {
+    // Fail closed: do not show the page if checking fails
+    blocker.style.display = "flex";
+    blocker.querySelector("h2").textContent = "Connection Check Failed";
+    blocker.querySelector("p").textContent =
+      "We couldn't verify your connection. Please try again.";
+    document.querySelector("#vpnBlocker button").textContent = "Try Again";
+  }
+})();
+
 </script>
+
+<div id="vpnBlocker" style="display:none;">
+  <div class="vpn-box">
+    <div class="vpn-icon">🛡️</div>
+    <h2>VPN or Proxy Detected</h2>
+    <p>
+      Please disable your VPN or Proxy connection
+      and reload this page to continue reading.
+    </p>
+    <button onclick="location.reload()">I've Disabled It — Reload</button>
+  </div>
+</div>
+
+<style>
+#vpnBlocker {
+  position: fixed;
+  inset: 0;
+  z-index: 9999999;
+  background: #080d18;
+  color: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+.vpn-box {
+  max-width: 420px;
+  width: 100%;
+  padding: 35px 22px;
+  background: #151e30;
+  border: 1px solid #34425c;
+  border-radius: 18px;
+}
+.vpn-icon { font-size: 55px; }
+.vpn-box h2 { color: #ff5252; }
+.vpn-box p {
+  color: #d1d5db;
+  line-height: 1.7;
+}
+.vpn-box button {
+  background: #e53935;
+  color: white;
+  border: 0;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+}
+</style>
+
 </body>
 </html>
