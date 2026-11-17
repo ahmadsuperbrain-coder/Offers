@@ -2,725 +2,771 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#064e3b">
+<meta name="theme-color" content="#101827">
 <title>Hausa Novels Reader</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 :root {
-    --bg:#f4f6fa;
-    --card:#fff;
-    --text:#172033;
-    --muted:#718096;
-    --primary:#087f5b;
-    --border:#e5eaf0;
+  --bg:#f4f6fa;
+  --card:#fff;
+  --text:#182235;
+  --muted:#687386;
+  --primary:#2563eb;
+  --border:#e3e8f0;
 }
-body.dark {
-    --bg:#101827;
-    --card:#1b2638;
-    --text:#f1f5f9;
-    --muted:#a0aec0;
-    --border:#334155;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  padding-bottom:125px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-header{background:linear-gradient(135deg,#064e3b,#087f5b);color:white;padding:30px 15px;text-align:center}
-header h1{font-size:26px;margin-bottom:8px}
-header p{font-size:14px;opacity:.9}
-.topbar{max-width:1100px;margin:15px auto;padding:0 15px;display:flex;gap:10px}
-.search-box{flex:1;position:relative}
-.search-box input{width:100%;padding:14px 42px;border:1px solid var(--border);border-radius:12px;outline:none;background:var(--card);color:var(--text);font-size:15px}
-.search-box i{position:absolute;left:15px;top:15px;color:var(--muted)}
-.icon-btn{border:1px solid var(--border);background:var(--card);color:var(--text);padding:13px 15px;border-radius:10px;cursor:pointer}
-.container{max-width:1100px;margin:auto;padding:10px 15px 40px}
-.section-heading{display:flex;justify-content:space-between;align-items:center;margin:25px 0 15px}
-.section-heading h2{font-size:20px}
-.count{color:var(--muted);font-size:13px}
-.book-grid,.offer-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:15px}
-.book-card,.offer-card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;transition:.2s;overflow:hidden}
-.book-card:hover,.offer-card:hover{transform:translateY(-3px);box-shadow:0 8px 25px #00000012}
-.book-icon{width:55px;height:55px;display:flex;align-items:center;justify-content:center;background:#d1fae5;color:#047857;border-radius:14px;font-size:24px;margin-bottom:15px}
-.book-card h3,.offer-card h3{font-size:16px;margin-bottom:10px;overflow-wrap:anywhere}
-.book-card p,.offer-card p{color:var(--muted);font-size:13px;margin-bottom:15px;line-height:1.6}
-.read-btn,.offer-btn{display:block;width:100%;padding:12px;border:none;border-radius:9px;background:var(--primary);color:white;font-weight:bold;text-align:center;text-decoration:none;cursor:pointer}
-.offer-label{display:inline-block;background:#dcfce7;color:#166534;padding:5px 9px;border-radius:20px;font-size:11px;font-weight:bold;margin-bottom:12px}
-.offer-image{width:55px;height:55px;object-fit:contain;border-radius:12px;margin-bottom:12px;background:#f1f5f9;padding:5px}
-.status{background:var(--card);border:1px solid var(--border);padding:20px;text-align:center;border-radius:12px;color:var(--muted);grid-column:1/-1}
-.continue-card{display:none;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:13px;padding:18px;margin:20px 0}
-.continue-card h3{margin-bottom:8px}
-.continue-card p{color:var(--muted);font-size:13px;margin-bottom:12px}
-.continue-btn{background:var(--primary);color:white;border:0;border-radius:8px;padding:11px 16px;font-weight:bold;cursor:pointer}
-.progress-track{height:7px;background:var(--border);border-radius:20px;margin:12px 0;overflow:hidden}
-.progress-fill{height:100%;width:0;background:var(--primary);border-radius:20px}
-.reader{display:none;position:fixed;inset:0;z-index:1000;background:var(--bg);overflow-y:auto}
-.reader-header{position:sticky;top:0;z-index:2;background:#064e3b;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.reader-header h2{font-size:17px;overflow-wrap:anywhere}
-.reader-header button{background:#ffffff20;color:white;border:1px solid #ffffff40;padding:9px 12px;border-radius:8px;cursor:pointer}
-.reader-tools{max-width:850px;margin:15px auto;padding:0 15px;display:flex;justify-content:flex-end;gap:10px}
-.reader-tools button{background:var(--card);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:8px;cursor:pointer}
-.reader-progress{position:sticky;top:56px;height:4px;background:#ffffff30;z-index:3}
-.reader-progress div{height:100%;width:0;background:#a7f3d0}
-.reader-body{max-width:850px;margin:15px auto 30px;padding:25px;background:var(--card);border-radius:12px;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere;font-size:18px}
-footer{text-align:center;padding:25px;color:var(--muted);font-size:13px}
-@media(max-width:600px){
-header h1{font-size:22px}
-.book-grid,.offer-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.book-card,.offer-card{padding:13px}
-.book-card h3,.offer-card h3{font-size:14px}
-.reader-body{margin:12px;padding:18px;font-size:17px}
+body.dark{
+  --bg:#101827;
+  --card:#1c293b;
+  --text:#f1f5f9;
+  --muted:#aab6c8;
+  --border:#344258;
 }
-#stickyOffers {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 99999;
-    background: #111827;
-    color: #fff;
-    box-shadow: 0 -4px 20px rgba(0,0,0,.25);
-    padding: 10px 12px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+button,input{font:inherit}
+button{cursor:pointer}
+header{
+  background:#172554;
+  color:white;
+  padding:22px 15px;
+  text-align:center;
 }
-#stickyOffers .sticky-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 9px;
+header h1{margin:0 0 8px;font-size:25px}
+header p{margin:0;color:#dbeafe}
+.top-actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-top:15px;
 }
-#stickyOffers .sticky-title {
-    font-size: 14px;
-    font-weight: 800;
+.top-actions button{
+  border:1px solid #64748b;
+  background:#263b70;
+  color:white;
+  padding:9px 14px;
+  border-radius:8px;
 }
-#stickyOffers .sticky-close {
-    border: 0;
-    background: #374151;
-    color: white;
-    width: 25px;
-    height: 25px;
-    border-radius: 50%;
-    cursor: pointer;
+.container{
+  width:min(1100px,94%);
+  margin:22px auto;
 }
-#stickyOffers .sticky-list {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scrollbar-width: none;
+.search-box{
+  display:flex;
+  gap:8px;
+  margin-bottom:20px;
 }
-#stickyOffers .sticky-list::-webkit-scrollbar {
-    display: none;
+.search-box input{
+  width:100%;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--card);
+  color:var(--text);
+  outline:none;
 }
-#stickyOffers .sticky-card {
-    min-width: 230px;
-    max-width: 230px;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    background: #1f2937;
-    border: 1px solid #374151;
-    border-radius: 12px;
-    padding: 9px;
-    box-sizing: border-box;
+.section-title{
+  font-size:20px;
+  margin:25px 0 13px;
 }
-#stickyOffers .sticky-card img {
-    width: 42px;
-    height: 42px;
-    object-fit: cover;
-    border-radius: 9px;
-    background: #fff;
+.continue-card{
+  display:none;
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:16px;
+  border-radius:12px;
+  margin-bottom:20px;
 }
-#stickyOffers .sticky-info {
-    flex: 1;
-    min-width: 0;
+.continue-card button,.book-card button,.offer-card button{
+  background:var(--primary);
+  color:white;
+  border:0;
+  padding:10px 14px;
+  border-radius:7px;
 }
-#stickyOffers .sticky-info strong {
-    display: block;
-    font-size: 12px;
-    line-height: 1.4;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+.progress-track{
+  height:7px;
+  background:#dce3ed;
+  border-radius:20px;
+  overflow:hidden;
+  margin:10px 0;
 }
-#stickyOffers .sticky-info a {
-    display: inline-block;
-    margin-top: 5px;
-    background: #16a34a;
-    color: white;
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: bold;
+.progress-fill{
+  height:100%;
+  width:0;
+  background:#16a34a;
 }
-#stickyOffers .sticky-loading {
-    font-size: 12px;
-    color: #d1d5db;
-    padding: 10px;
+.loading-progress{
+  background:var(--card);
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:15px;
 }
-body {
-    padding-bottom: 125px !important;
+.loading-progress-track{
+  height:8px;
+  background:#dce3ed;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:10px;
 }
-@media(max-width:480px) {
-    #stickyOffers { padding: 9px; }
-    #stickyOffers .sticky-card { min-width: 215px; }
+.loading-progress-fill{
+  height:100%;
+  width:0;
+  background:#2563eb;
+  transition:width .2s;
+}
+.books-grid,.offers-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
+  gap:12px;
+}
+.book-card,.offer-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px;
+  min-width:0;
+}
+.book-card h3{
+  font-size:14px;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+  margin:0 0 12px;
+}
+.book-card small,.offer-card small{color:var(--muted)}
+.book-card button{width:100%;margin-top:10px}
+.empty-message{
+  color:var(--muted);
+  text-align:center;
+  padding:20px;
+}
+.offer-card{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.offer-card img{
+  width:100%;
+  height:90px;
+  object-fit:contain;
+}
+.offer-card a{
+  display:block;
+  margin-top:auto;
+  text-decoration:none;
+  color:white;
+  background:#2563eb;
+  text-align:center;
+  padding:10px;
+  border-radius:7px;
+}
+#reader{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:var(--bg);
+  color:var(--text);
+  overflow:auto;
+}
+.reader-header{
+  position:sticky;
+  top:0;
+  background:#172554;
+  color:white;
+  padding:12px;
+  z-index:2;
+}
+.reader-tools{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.reader-tools button{
+  background:#334b83;
+  color:white;
+  border:0;
+  padding:9px 13px;
+  border-radius:7px;
+}
+#readerProgress{
+  height:5px;
+  background:#334155;
+  margin-top:10px;
+}
+#readerProgressFill{
+  width:0;
+  height:100%;
+  background:#22c55e;
+}
+#readerTitle{
+  margin:18px auto;
+  width:min(850px,92%);
+}
+#readerContent{
+  width:min(850px,92%);
+  margin:0 auto;
+  padding:10px 0 70px;
+  font-size:18px;
+  line-height:1.9;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+footer{
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
 }
 
-.loading-progress {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-    grid-column: 1 / -1;
+/* Sticky offers */
+#stickyOffers{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:5000;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  box-shadow:0 -4px 15px #0002;
+  padding:9px 12px 12px;
 }
-
-.loading-progress p {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 9px;
+.sticky-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
 }
-
-.loading-progress-track {
-    height: 8px;
-    background: var(--border);
-    border-radius: 20px;
-    overflow: hidden;
+.sticky-title{font-weight:bold}
+.sticky-close{
+  border:0;
+  background:#dc2626;
+  color:white;
+  border-radius:6px;
+  font-size:20px;
+  width:30px;
+  height:30px;
 }
-
-.loading-progress-fill {
-    height: 100%;
-    width: 0;
-    background: var(--primary);
-    transition: width .25s;
+.sticky-list{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  padding-bottom:5px;
 }
+.sticky-card{
+  min-width:190px;
+  max-width:220px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:8px;
+  border:1px solid var(--border);
+  border-radius:9px;
+  text-decoration:none;
+  color:var(--text);
+  background:var(--bg);
+}
+.sticky-card img{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+}
+.sticky-info{
+  font-size:12px;
+  font-weight:bold;
+}
+.sticky-loading{font-size:13px;color:var(--muted)}
 
+/* VPN blocker */
+#vpnBlocker{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999999;
+  background:#080d18;
+  color:white;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  text-align:center;
+  font-family:Arial,sans-serif;
+  visibility:visible;
+}
+.vpn-box{
+  max-width:430px;
+  width:100%;
+  padding:35px 22px;
+  background:#151e30;
+  border:1px solid #34425c;
+  border-radius:18px;
+}
+.vpn-icon{font-size:55px}
+.vpn-box h2{color:#ff5252}
+.vpn-box p{
+  color:#d1d5db;
+  line-height:1.7;
+}
+.vpn-box button{
+  background:#e53935;
+  color:white;
+  border:0;
+  padding:14px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  width:100%;
+  margin-top:12px;
+}
+#vpnStatus{
+  color:#fca5a5;
+  font-size:13px;
+  margin-top:12px;
+}
+@media(max-width:500px){
+  header h1{font-size:21px}
+  .books-grid,.offers-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
 </style>
 </head>
 
 <body>
 
 <header>
-    <h1><i class="fas fa-book-open"></i> Hausa Novels</h1>
-    <p>Read Your Favourite Hausa Novels Anytime</p>
+  <h1>Hausa Novels Reader</h1>
+  <p>Read your favourite Hausa novels online</p>
+  <div class="top-actions">
+    <button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+  </div>
 </header>
-
-<div class="topbar">
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="search" id="searchInput" placeholder="Search novels..." oninput="renderBooks()">
-    </div>
-    <button class="icon-btn" onclick="toggleDarkMode()" title="Toggle theme">
-        <i class="fas fa-moon"></i>
-    </button>
-</div>
 
 <main class="container">
 
-    <section class="continue-card" id="continueCard">
-        <h3><i class="fas fa-history"></i> Continue Reading</h3>
-        <p id="continueTitle"></p>
-        <div class="progress-track">
-            <div class="progress-fill" id="continueProgress"></div>
-        </div>
-        <p id="continuePercent"></p>
-        <button class="continue-btn" onclick="continueReading()">
-            <i class="fas fa-book-reader"></i> Continue Reading
-        </button>
-    </section>
+  <div class="search-box">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search Hausa novels..."
+      oninput="renderBooks()"
+    >
+  </div>
 
-    <section>
-        <div class="section-heading">
-            <h2>All Novels</h2>
-            <span class="count" id="novelCount">Loading...</span>
-        </div>
-        <div class="book-grid" id="bookList">
-            <div class="status"><i class="fas fa-spinner fa-spin"></i> Loading novels...</div>
-        </div>
-    </section>
+  <div class="continue-card" id="continueCard">
+    <h3>Continue Reading</h3>
+    <div id="continueTitle"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="continueProgress"></div>
+    </div>
+    <button onclick="continueReading()">Continue Reading</button>
+  </div>
 
-    <section id="offersSection">
-        <div class="section-heading">
-            <h2><i class="fas fa-gift"></i> Recommended Offers</h2>
-            <span class="count" id="offerCount">Loading...</span>
-        </div>
-        <div class="offer-grid" id="offerList">
-            <div class="status"><i class="fas fa-spinner fa-spin"></i> Loading offers...</div>
-        </div>
-    </section>
+  <h2 class="section-title">All Hausa Novels</h2>
+
+  <div class="loading-progress" id="loadingProgress">
+    <div id="loadingText">Preparing novels...</div>
+    <div class="loading-progress-track">
+      <div class="loading-progress-fill" id="loadingFill"></div>
+    </div>
+  </div>
+
+  <div class="books-grid" id="booksGrid"></div>
+
+  <h2 class="section-title">Recommended Offers</h2>
+  <div class="offers-grid" id="offersGrid">
+    <p class="empty-message">Loading offers...</p>
+  </div>
 
 </main>
 
 <footer>
-    © <span id="year"></span> Hausa Novels. All Rights Reserved.
+  © <span id="footerYear"></span> Hausa Novels Reader
 </footer>
 
-<div class="reader" id="reader">
+<!-- Sticky offers -->
+<div id="stickyOffers">
+  <div class="sticky-head">
+    <div class="sticky-title">🔥 Recommended Offers</div>
+    <button class="sticky-close" onclick="closeStickyOffers()">×</button>
+  </div>
+  <div class="sticky-list" id="stickyOfferList">
+    <div class="sticky-loading">Loading offers...</div>
+  </div>
+</div>
 
-    <div class="reader-header">
-        <h2 id="readerTitle">Novel Title</h2>
-        <button onclick="closeReader()" title="Close reader">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
-
-    <div class="reader-progress">
-        <div id="readerProgress"></div>
-    </div>
-
+<!-- Reader -->
+<div id="reader">
+  <div class="reader-header">
     <div class="reader-tools">
-        <button onclick="changeFont(-1)" title="Decrease font"><i class="fas fa-minus"></i></button>
-        <button onclick="changeFont(1)" title="Increase font"><i class="fas fa-plus"></i></button>
+      <button onclick="closeReader()">← Close</button>
+      <div>
+        <button onclick="changeFontSize(-1)">A−</button>
+        <button onclick="changeFontSize(1)">A+</button>
+      </div>
     </div>
+    <div id="readerProgress">
+      <div id="readerProgressFill"></div>
+    </div>
+  </div>
+  <h2 id="readerTitle"></h2>
+  <div id="readerContent"></div>
+</div>
 
-    <div class="reader-body" id="bookContent"></div>
-
+<!-- VPN / Proxy Blocker -->
+<div id="vpnBlocker">
+  <div class="vpn-box">
+    <div class="vpn-icon">🛡️</div>
+    <h2 id="vpnHeading">VPN or Proxy Detected</h2>
+    <p id="vpnMessage">
+      Please disable your VPN or Proxy connection
+      and reload this page to continue reading.
+    </p>
+    <button onclick="location.reload()">
+      I've Disabled It — Reload
+    </button>
+    <div id="vpnStatus"></div>
+  </div>
 </div>
 
 <script>
+"use strict";
+
 /* =====================================
    NOVEL FILES
 ===================================== */
 
 const NOVEL_FILES = [
-    "ASP ZARAH 1 By Jasmine (1).txt",
-    "ASP ZARAH 2 By Jasmine.txt",
-    "ASP ZARAH By Jasmine -1.txt",
-    "Atsakaninmu, cmplt Na Khaleesi-1.txt",
-    "AURAN BABBAN MUTUM BY UMMEE MUKHTAR-1-1-1.txt",
-    "AURAN BABBAN MUTUM BY UMMEE MUKHTAR-1.txt",
-    "AURE KO BOKO 1&2 BY TAKORI-1 (1) (1).txt",
-    "AURE KO BOKO 1&2 BY TAKORI-1 (1).txt",
-    "AUREN FARI cmplt(1).txt",
-    "AUREN GADO Cmplt-1.txt",
-    "AUREN GADO COMPLT.txt",
-    "AUREN HAƊI Complate-1.txt",
-    "ANCUCE HIJJABI.txt",
-    "ANTI ROMANCE... Oum Aphnan (1).txt",
-    "ANTI ROMANCE... Oum Aphnan.txt",
-    "ANWAR $ AYMAN COMPLETE.txt",
-    "Anya Baiwa ce Cmplt-1.txt",
-    "Anya Baiwa ce Cmplt.txt",
-    "ARMAN - MALEEQ BY (1) SALMA ƳAR LELE-1.txt",
-    "ARNAN DAJI BOOK 2 COMPLETE.txt",
-    "ARNAN DAJI COMPLETE By Feedeen Bash.txt",
-    "Arne complt by suryyahm-1-3.doc",
-    "ASALINA COMPLET.txt",
-    "ALKAWARIN ALLAH cmplt.txt",
-    "ALKAWARIN ALLAH cmplt-1.txt",
-    "Alkibla complete huguma.txt",
-    "ALKAWARIN MASOYA COMPLT.txt",
-    "Allah gatan bawa cmplt.txt",
-    "Allah gatan bawa cmplt (1).txt",
-    "ALMAJIRA cmpt.txt",
-    "ALLAH NE SHEDA cmplt1-1.txt",
-    "AMARYAR_NASEER_1_to_60-1-1.txt",
-    "AMANA TABARMIN CMPLT BY 09063626602.txt",
-    "AMATULMALEEK COMPLETED BY MAMUHGEE-WPS Office-1.txt",
-    "AMEENATOU 1 By Mamuhgee.txt",
-    "AMEENATOU BOOK1&2 CMPLT BY MAMUHGEE-1-1.txt",
-    "Amriya Hatsabiyayar Aljana 1 to 35.txt",
-    "Amriya Hatsabiyayar Aljana-1.txt",
-    "Amriya Hatsabiyayar Aljana.txt",
-    "ALAJANAR JARUMAI complete by Mmn nusaiba.txt",
-    "Al'AMARIN ZUCI complete.txt",
-    "ALHERI 1.doc",
-    "ALFAH(COMPLETED) BY SURAYYAMS.txt",
-    "ALHERI 3.doc",
-    "ALHERI 2.doc",
-    "ALHUSSAIN by oum ramadan www.dlhausanovels.com.ng.txt",
-    "Alheri danko ne complete.txt",
-    "ALIYU GADANGA BY JANAFNANCY-1.txt",
-    "ALI GADANGA COMPLETE.txt",
-    "ALJANA CE KO MUTUM. complete-1-1-1.txt",
-    "ALJANA CE KO MUTUM. complete-1-1-1-1.txt",
-    "Alkaline by www.dlhausanovels.com.ng.txt",
-    "ALJANAR FATIMA 1toEnd COMPLETE-1-1-1(1).txt",
-    "AISHA SIDDIQA 1 BY TAKORI.txt",
-    "AISHATUL-MUBEENA-by-Miss-Hafcy-www.dlhausanovels.com_.ng_.txt",
-    "AISHA SIDDIQA 3 BY TAKORI.txt",
-    "Ajininsa yake part 1-1.txt",
-    "Ajininsa yake part 3.txt",
-    "AJIYA A DUHU BOOK1 CMPLT BILLYNABDUL-WPS Office (1).txt",
-    "AJIYA A DUHU BOOK1&2 CMPLT BY BILLYNABDUL(1).txt",
-    "AKAN AIKINA cmplt BY(UMMU MAHER)-1.txt",
-    "AKAN AIKINA cmplt BY(UMMU MAHER).txt",
-    "AKAN MIJINA BY MINERT-1-1.txt",
-    "AKAN_PRE_WEEDING_PICTURE'S_FREE_BOOK,_NA_MUJAHEEDAH_MATAR_MLM,_AMMIEYN.txt",
-    "AKWAI BAMBANCI COMPLETE.txt",
-    "AKWAI LOKACI 1 BY UMMU AFAN -1-1-1.txt",
-    "AL AJABI CMPLTT-1-1(0).txt",
-    "AL'AMARIN UBANGIJI (1-120))-1.txt",
-    "Abdus-samad-1.txt",
-    "ABIN CIKIN ƘWAI(By ummu maher miss green).txt",
-    "ABIN CIKIN RUHINA BY MISS BB.txt",
-    "ABINCIN WANI - hausanew.com.ng.txt",
-    "ABINCIN WANI(GUBAR WANI).txt",
-    "ABINDA AKE GUDU (1 to End)complete-1-1-1.txt",
-    "ABNUR 1- End-1.txt",
-    "AGOLA(1 to End)-1.txt",
-    "AHALIN HARIJAI 1 By Auta.txt",
-    "Ahali d'aya complete by merhreeyeart lawal.txt",
-    "AISHA HUMAIRA Complete-1-2.txt",
-    "AHUMAGGAH.txt",
-    "AISHA SIDDIQA 2 BY TAKORI.txt",
-    "abdulmalik bobo complete (2).txt"
+"ASP ZARAH 1 By Jasmine (1).txt",
+"ASP ZARAH 2 By Jasmine.txt",
+"ASP ZARAH By Jasmine -1.txt",
+"Atsakaninmu, cmplt Na Khaleesi-1.txt",
+"AURAN BABBAN MUTUM BY UMMEE MUKHTAR-1-1-1.txt",
+"AURAN BABBAN MUTUM BY UMMEE MUKHTAR-1.txt",
+"AURE KO BOKO 1&2 BY TAKORI-1 (1) (1).txt",
+"AURE KO BOKO 1&2 BY TAKORI-1 (1).txt",
+"AUREN FARI cmplt(1).txt",
+"AUREN GADO Cmplt-1.txt",
+"AUREN GADO COMPLT.txt",
+"AUREN HAƊI Complate-1.txt",
+"ANCUCE HIJJABI.txt",
+"ANTI ROMANCE... Oum Aphnan (1).txt",
+"ANTI ROMANCE... Oum Aphnan.txt",
+"ANWAR $ AYMAN COMPLETE.txt",
+"Anya Baiwa ce Cmplt-1.txt",
+"Anya Baiwa ce Cmplt.txt",
+"ARMAN - MALEEQ BY (1) SALMA ƳAR LELE-1.txt",
+"ARNAN DAJI BOOK 2 COMPLETE.txt",
+"ARNAN DAJI COMPLETE By Feedeen Bash.txt",
+"Arne complt by suryyahm-1-3.doc",
+"ASALINA COMPLET.txt",
+"ALKAWARIN ALLAH cmplt.txt",
+"ALKAWARIN ALLAH cmplt-1.txt",
+"Alkibla complete huguma.txt",
+"ALKAWARIN MASOYA COMPLT.txt",
+"Allah gatan bawa cmplt.txt",
+"Allah gatan bawa cmplt (1).txt",
+"ALMAJIRA cmpt.txt",
+"ALLAH NE SHEDA cmplt1-1.txt",
+"AMARYAR_NASEER_1_to_60-1-1.txt",
+"AMANA TABARMIN CMPLT BY 09063626602.txt",
+"AMATULMALEEK COMPLETED BY MAMUHGEE-WPS Office-1.txt",
+"AMEENATOU 1 By Mamuhgee.txt",
+"AMEENATOU BOOK1&2 CMPLT BY MAMUHGEE-1-1.txt",
+"Amriya Hatsabiyayar Aljana 1 to 35.txt",
+"Amriya Hatsabiyayar Aljana-1.txt",
+"Amriya Hatsabiyayar Aljana.txt",
+"ALAJANAR JARUMAI complete by Mmn nusaiba.txt",
+"Al'AMARIN ZUCI complete.txt",
+"ALHERI 1.doc",
+"ALFAH(COMPLETED) BY SURAYYAMS.txt",
+"ALHERI 3.doc",
+"ALHERI 2.doc",
+"ALHUSSAIN by oum ramadan www.dlhausanovels.com.ng.txt",
+"Alheri danko ne complete.txt",
+"ALIYU GADANGA BY JANAFNANCY-1.txt",
+"ALI GADANGA COMPLETE.txt",
+"ALJANA CE KO MUTUM. complete-1-1-1.txt",
+"ALJANA CE KO MUTUM. complete-1-1-1-1.txt",
+"Alkaline by www.dlhausanovels.com.ng.txt",
+"ALJANAR FATIMA 1toEnd COMPLETE-1-1-1(1).txt",
+"AISHA SIDDIQA 1 BY TAKORI.txt",
+"AISHATUL-MUBEENA-by-Miss-Hafcy-www.dlhausanovels.com_.ng_.txt",
+"AISHA SIDDIQA 3 BY TAKORI.txt",
+"Ajininsa yake part 1-1.txt",
+"Ajininsa yake part 3.txt",
+"AJIYA A DUHU BOOK1 CMPLT BILLYNABDUL-WPS Office (1).txt",
+"AJIYA A DUHU BOOK1&2 CMPLT BY BILLYNABDUL(1).txt",
+"AKAN AIKINA cmplt BY(UMMU MAHER)-1.txt",
+"AKAN AIKINA cmplt BY(UMMU MAHER).txt",
+"AKAN MIJINA BY MINERT-1-1.txt",
+"AKAN_PRE_WEEDING_PICTURE'S_FREE_BOOK,_NA_MUJAHEEDAH_MATAR_MLM,_AMMIEYN.txt",
+"AKWAI BAMBANCI COMPLETE.txt",
+"AKWAI LOKACI 1 BY UMMU AFAN -1-1-1.txt",
+"AL AJABI CMPLTT-1-1(0).txt",
+"AL'AMARIN UBANGIJI (1-120))-1.txt",
+"Abdus-samad-1.txt",
+"ABIN CIKIN ƘWAI(By ummu maher miss green).txt",
+"ABIN CIKIN RUHINA BY MISS BB.txt",
+"ABINCIN WANI - hausanew.com.ng.txt",
+"ABINCIN WANI(GUBAR WANI).txt",
+"ABINDA AKE GUDU (1 to End)complete-1-1-1.txt",
+"ABNUR 1- End-1.txt",
+"AGOLA(1 to End)-1.txt",
+"AHALIN HARIJAI 1 By Auta.txt",
+"Ahali d'aya complete by merhreeyeart lawal.txt",
+"AISHA HUMAIRA Complete-1-2.txt",
+"AHUMAGGAH.txt",
+"AISHA SIDDIQA 2 BY TAKORI.txt",
+"abdulmalik bobo complete (2).txt"
 ];
 
-
 /* =====================================
-   OFFERS API
+   SETTINGS
 ===================================== */
 
 const OFFER_API =
 "https://d3r33tlb373kwk.cloudfront.net/public/offers/feed.php?user_id=815457&api_key=376e7fe38ff33269d849fc84b9079cb4&s1=&s2=";
 
-
-/* =====================================
-   VARIABLES
-===================================== */
+const SAVE_KEY = "hausaNovelReaderProgress";
 
 let loadedNovels = [];
 let loadedOffers = [];
 let currentNovel = null;
 let currentFontSize = 18;
-
-const SAVE_KEY = "hausaNovelReadingProgress";
+let savedProgress = null;
 
 
 /* =====================================
-   SAVED READING PROGRESS
+   VPN / PROXY CHECKER
 ===================================== */
 
-function getSavedProgress() {
-    try {
-        return JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
-    } catch {
-        return {};
+async function checkVPN() {
+  const blocker = document.getElementById("vpnBlocker");
+
+  // Hide the website while checking the visitor's IP.
+  document.body.style.visibility = "hidden";
+  blocker.style.display = "none";
+
+  try {
+    const response = await fetch(
+      "https://api.ipapi.is/",
+      {
+        method: "GET",
+        cache: "no-store"
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("IP verification service unavailable");
     }
+
+    const data = await response.json();
+
+    const vpnDetected = data.is_vpn === true;
+    const proxyDetected = data.is_proxy === true;
+    const torDetected = data.is_tor === true;
+    const datacenterDetected = data.is_datacenter === true;
+
+    if (
+      vpnDetected ||
+      proxyDetected ||
+      torDetected ||
+      datacenterDetected
+    ) {
+      showBlocker(
+        "VPN or Proxy Detected",
+        "Please turn off your VPN, Proxy or Tor connection, then reload this page to continue reading."
+      );
+      return false;
+    }
+
+    // Allow access only after a successful clean check.
+    document.body.style.visibility = "visible";
+    return true;
+
+  } catch (error) {
+    showBlocker(
+      "Connection Verification Failed",
+      "We could not verify your internet connection. Please check your internet and try again."
+    );
+
+    return false;
+  }
 }
 
-function saveProgress(data) {
-    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+function showBlocker(title, message) {
+  document.getElementById("vpnHeading").textContent = title;
+  document.getElementById("vpnMessage").textContent = message;
+  document.getElementById("vpnStatus").textContent =
+    "Access is unavailable until connection verification succeeds.";
+
+  document.getElementById("vpnBlocker").style.display = "flex";
+  document.body.style.visibility = "hidden";
 }
 
 
 /* =====================================
-   SEQUENTIAL NOVEL LOADER
+   NOVEL LOADING
 ===================================== */
 
 async function loadNovels() {
+  const total = NOVEL_FILES.length;
+  const loadingText = document.getElementById("loadingText");
+  const loadingFill = document.getElementById("loadingFill");
 
-    const bookList = document.getElementById("bookList");
-    const novelCount = document.getElementById("novelCount");
+  for (let i = 0; i < total; i++) {
+    const file = NOVEL_FILES[i];
 
-    loadedNovels = [];
+    loadingText.textContent =
+      "Loading novels: " + (i + 1) + " of " + total;
 
-    let completed = 0;
-    let failed = 0;
+    try {
+      const response = await fetch(
+        encodeURIComponent(file)
+      );
 
-    const total = NOVEL_FILES.length;
+      if (!response.ok) {
+        throw new Error("File not found");
+      }
 
-    bookList.innerHTML = `
-        <div class="loading-progress" style="grid-column:1/-1">
-            <p id="loadingText">Preparing novels...</p>
+      // Note: .doc files are binary Word documents and
+      // should be converted to .txt for this reader.
+      if (file.toLowerCase().endsWith(".doc")) {
+        throw new Error("DOC format needs conversion to TXT");
+      }
 
-            <div class="loading-progress-track">
-                <div class="loading-progress-fill"
-                     id="loadingFill"></div>
-            </div>
-        </div>
-    `;
+      const content = await response.text();
 
-    novelCount.textContent = `0 / ${total} loaded`;
+      loadedNovels.push({
+        name: file.replace(/\.(txt|doc)$/i, ""),
+        file: file,
+        content: content
+      });
 
-    for (const file of NOVEL_FILES) {
+      renderBooks();
 
-        try {
-
-            const response = await fetch(
-                encodeURIComponent(file) + "?t=" + Date.now()
-            );
-
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            const content = await response.text();
-
-            loadedNovels.push({
-                title: file.replace(/\.(txt|doc)$/i, ""),
-                filename: file,
-                content: content,
-                success: true
-            });
-
-        } catch (error) {
-
-            console.error("Unable to load:", file, error);
-            failed++;
-
-        }
-
-        completed++;
-
-        const percent = Math.round(
-            (completed / total) * 100
-        );
-
-        const loadingText =
-            document.getElementById("loadingText");
-
-        const loadingFill =
-            document.getElementById("loadingFill");
-
-        if (loadingText) {
-            loadingText.textContent =
-                `Loading novels: ${completed} of ${total} (${percent}%)`;
-        }
-
-        if (loadingFill) {
-            loadingFill.style.width = percent + "%";
-        }
-
-        novelCount.textContent =
-            `${loadedNovels.length} novels loaded`;
-
-        renderBooks();
-
-        // Allow browser to update the screen
-        await new Promise(resolve =>
-            setTimeout(resolve, 30)
-        );
+    } catch (error) {
+      console.warn("Could not load:", file, error.message);
     }
 
-    renderBooks();
-    updateContinueCard();
+    loadingFill.style.width =
+      ((i + 1) / total * 100) + "%";
 
-    console.log(
-        `Loading completed: ${loadedNovels.length} successful, ${failed} failed.`
-    );
+    await new Promise(resolve => setTimeout(resolve, 20));
+  }
+
+  loadingText.textContent =
+    "Loading completed. " + loadedNovels.length + " novels available.";
+
+  document.getElementById("loadingProgress").style.display = "none";
+  renderBooks();
 }
 
 
 /* =====================================
-   DISPLAY NOVELS
+   RENDER NOVELS
 ===================================== */
 
 function renderBooks() {
+  const grid = document.getElementById("booksGrid");
+  const search = document.getElementById("searchInput")
+    .value.toLowerCase().trim();
 
-    const bookList =
-        document.getElementById("bookList");
+  const filtered = loadedNovels.filter(book =>
+    book.name.toLowerCase().includes(search)
+  );
 
-    const search =
-        document.getElementById("searchInput")
-        .value.toLowerCase().trim();
+  if (!filtered.length) {
+    grid.innerHTML =
+      '<div class="empty-message">No novels found.</div>';
+    return;
+  }
 
-    const filtered = loadedNovels.filter(book =>
-        book.title.toLowerCase().includes(search)
+  grid.innerHTML = "";
+
+  filtered.forEach(book => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+
+    const title = document.createElement("h3");
+    title.textContent = book.name;
+
+    const info = document.createElement("small");
+    info.textContent = "Hausa Novel";
+
+    const button = document.createElement("button");
+    button.textContent = "Read Novel";
+    button.addEventListener("click", () => openNovel(book));
+
+    card.appendChild(title);
+    card.appendChild(info);
+    card.appendChild(button);
+    grid.appendChild(card);
+  });
+}
+
+
+/* =====================================
+   READING PROGRESS
+===================================== */
+
+function getSavedProgress() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVE_KEY)) || null;
+  } catch {
+    return null;
+  }
+}
+
+function saveProgress() {
+  if (!currentNovel) return;
+
+  const content = document.getElementById("readerContent");
+
+  const progress = {
+    file: currentNovel.file,
+    scroll: content.scrollTop,
+    title: currentNovel.name
+  };
+
+  localStorage.setItem(SAVE_KEY, JSON.stringify(progress));
+  updateContinueCard();
+}
+
+function updateContinueCard() {
+  const saved = getSavedProgress();
+  const card = document.getElementById("continueCard");
+
+  if (!saved) {
+    card.style.display = "none";
+    return;
+  }
+
+  card.style.display = "block";
+  document.getElementById("continueTitle").textContent =
+    saved.title || "Your last novel";
+
+  const book = loadedNovels.find(item => item.file === saved.file);
+
+  if (book) {
+    const percent = Math.min(
+      100,
+      Math.round(
+        (saved.scroll / Math.max(1, book.content.length)) * 100
+      )
     );
 
-    document.getElementById("novelCount").textContent =
-        loadedNovels.length + " novels";
-
-    if (!filtered.length) {
-
-        bookList.innerHTML = `
-            <div class="status">No novels found.</div>
-        `;
-
-        return;
-    }
-
-    bookList.innerHTML = "";
-
-    filtered.forEach(book => {
-
-        const index = loadedNovels.indexOf(book);
-
-        const card = document.createElement("div");
-        card.className = "book-card";
-
-        const icon = document.createElement("div");
-        icon.className = "book-icon";
-        icon.innerHTML =
-            '<i class="fas fa-book"></i>';
-
-        const title = document.createElement("h3");
-        title.textContent = book.title;
-
-        const desc = document.createElement("p");
-        desc.textContent =
-            book.content.length + " characters";
-
-        const button = document.createElement("button");
-        button.className = "read-btn";
-        button.innerHTML =
-            '<i class="fas fa-book-open"></i> Read Novel';
-
-        button.addEventListener("click", () =>
-            openNovel(index, false)
-        );
-
-        card.append(icon, title, desc, button);
-
-        bookList.appendChild(card);
-    });
-}
-
-
-/* =====================================
-   LOAD OFFERS
-===================================== */
-
-async function loadOffers() {
-
-    const offerList =
-        document.getElementById("offerList");
-
-    try {
-
-        const response = await fetch(
-            OFFER_API + "&t=" + Date.now()
-        );
-
-        if (!response.ok) {
-            throw new Error("HTTP " + response.status);
-        }
-
-        const data = await response.json();
-
-        let offers = [];
-
-        if (Array.isArray(data)) {
-            offers = data;
-        } else if (Array.isArray(data.offers)) {
-            offers = data.offers;
-        } else if (Array.isArray(data.data)) {
-            offers = data.data;
-        }
-
-        loadedOffers = offers.filter(offer =>
-            offer &&
-            (offer.name || offer.title || offer.anchor) &&
-            (offer.url || offer.link || offer.offer_url)
-        );
-
-        renderOffers();
-
-    } catch (error) {
-
-        console.error("Offer loading error:", error);
-
-        document.getElementById("offerCount").textContent =
-            "Unavailable";
-
-        offerList.innerHTML = `
-            <div class="status">
-                Offers are temporarily unavailable.
-            </div>
-        `;
-    }
-}
-
-
-/* =====================================
-   DISPLAY OFFERS
-===================================== */
-
-function renderOffers() {
-
-    const offerList =
-        document.getElementById("offerList");
-
-    document.getElementById("offerCount").textContent =
-        loadedOffers.length + " offers";
-
-    offerList.innerHTML = "";
-
-    if (!loadedOffers.length) {
-
-        offerList.innerHTML = `
-            <div class="status">
-                No offers available right now.
-            </div>
-        `;
-
-        return;
-    }
-
-    loadedOffers.forEach(offer => {
-
-        const name =
-            offer.name || offer.title ||
-            offer.anchor || "Special Offer";
-
-        const description =
-            offer.description ||
-            offer.conversion ||
-            "Discover this special offer and learn more.";
-
-        const image =
-            offer.network_icon ||
-            offer.image ||
-            offer.icon || "";
-
-        const url =
-            offer.url || offer.link ||
-            offer.offer_url;
-
-        const card = document.createElement("div");
-        card.className = "offer-card";
-
-        const label = document.createElement("span");
-        label.className = "offer-label";
-        label.textContent = "SPECIAL OFFER";
-
-        card.appendChild(label);
-
-        if (image) {
-
-            const img = document.createElement("img");
-            img.className = "offer-image";
-            img.src = image;
-            img.alt = name;
-            img.loading = "lazy";
-            img.onerror = () => img.remove();
-
-            card.appendChild(img);
-
-        } else {
-
-            const icon = document.createElement("div");
-            icon.className = "book-icon";
-            icon.innerHTML =
-                '<i class="fas fa-gift"></i>';
-
-            card.appendChild(icon);
-        }
-
-        const title = document.createElement("h3");
-        title.textContent = name;
-
-        const desc = document.createElement("p");
-        desc.textContent = description;
-
-        const button = document.createElement("a");
-        button.className = "offer-btn";
-        button.href = url;
-        button.target = "_blank";
-        button.rel =
-            "nofollow sponsored noopener noreferrer";
-
-        button.textContent = "View Offer";
-
-        card.append(title, desc, button);
-        offerList.appendChild(card);
-    });
+    document.getElementById("continueProgress").style.width =
+      percent + "%";
+  }
 }
 
 
@@ -728,202 +774,86 @@ function renderOffers() {
    OPEN NOVEL
 ===================================== */
 
-function openNovel(index, resume = false) {
+function openNovel(book, restorePosition = false) {
+  currentNovel = book;
 
-    const novel = loadedNovels[index];
+  const reader = document.getElementById("reader");
+  const content = document.getElementById("readerContent");
 
-    if (!novel) return;
+  document.getElementById("readerTitle").textContent = book.name;
+  content.textContent = book.content;
+  content.style.fontSize = currentFontSize + "px";
 
-    currentNovel = novel;
+  reader.style.display = "block";
+  document.body.style.overflow = "hidden";
 
-    document.getElementById("readerTitle").textContent =
-        novel.title;
-
-    const content =
-        document.getElementById("bookContent");
-
-    content.textContent = novel.content;
-
-    const reader =
-        document.getElementById("reader");
-
-    reader.style.display = "block";
-
-    document.body.style.overflow = "hidden";
-
-    currentFontSize = 18;
-    updateFontSize();
-
-    requestAnimationFrame(() => {
-
-        const saved = getSavedProgress();
-
-        const position =
-            resume && saved[novel.filename]
-                ? saved[novel.filename].position || 0
-                : 0;
-
-        reader.scrollTop = position;
-
-        updateReaderProgress();
-    });
-}
-
-
-/* =====================================
-   SAVE READING POSITION
-===================================== */
-
-function updateReaderProgress() {
-
-    if (!currentNovel) return;
-
-    const reader =
-        document.getElementById("reader");
-
-    const maxScroll =
-        reader.scrollHeight - reader.clientHeight;
-
-    const position = reader.scrollTop;
-
-    const percentage = maxScroll > 0
-        ? Math.min(
-            100,
-            Math.round((position / maxScroll) * 100)
-          )
-        : 0;
-
-    document.getElementById("readerProgress").style.width =
-        percentage + "%";
-
+  if (restorePosition) {
     const saved = getSavedProgress();
 
-    saved[currentNovel.filename] = {
-        title: currentNovel.title,
-        position: position,
-        percentage: percentage,
-        updated: Date.now()
-    };
-
-    saved.lastNovel = currentNovel.filename;
-
-    saveProgress(saved);
-
-    updateContinueCard();
-}
-
-
-/* =====================================
-   CONTINUE READING CARD
-===================================== */
-
-function updateContinueCard() {
-
-    const saved = getSavedProgress();
-
-    const lastFile = saved.lastNovel;
-
-    const card =
-        document.getElementById("continueCard");
-
-    if (!lastFile || !saved[lastFile]) {
-
-        card.style.display = "none";
-        return;
+    if (saved && saved.file === book.file) {
+      content.scrollTop = saved.scroll || 0;
+    } else {
+      content.scrollTop = 0;
     }
+  } else {
+    content.scrollTop = 0;
+  }
 
-    const novel = loadedNovels.find(book =>
-        book.filename === lastFile
-    );
-
-    if (!novel) {
-
-        card.style.display = "none";
-        return;
-    }
-
-    const progress =
-        saved[lastFile].percentage || 0;
-
-    card.style.display = "block";
-
-    document.getElementById("continueTitle").textContent =
-        novel.title;
-
-    document.getElementById("continueProgress").style.width =
-        progress + "%";
-
-    document.getElementById("continuePercent").textContent =
-        progress + "% completed";
+  updateReaderProgress();
+  updateContinueCard();
 }
-
-
-/* =====================================
-   CONTINUE READING
-===================================== */
 
 function continueReading() {
+  const saved = getSavedProgress();
+  if (!saved) return;
 
-    const saved = getSavedProgress();
+  const book = loadedNovels.find(item => item.file === saved.file);
 
-    const lastFile = saved.lastNovel;
-
-    const index = loadedNovels.findIndex(book =>
-        book.filename === lastFile
-    );
-
-    if (index !== -1) {
-        openNovel(index, true);
-    }
+  if (book) {
+    openNovel(book, true);
+  }
 }
-
-
-/* =====================================
-   READER SCROLL EVENT
-===================================== */
-
-document.getElementById("reader").addEventListener(
-    "scroll",
-    updateReaderProgress,
-    { passive: true }
-);
-
-
-/* =====================================
-   CLOSE READER
-===================================== */
 
 function closeReader() {
-
-    updateReaderProgress();
-
-    document.getElementById("reader").style.display =
-        "none";
-
-    document.body.style.overflow = "auto";
+  saveProgress();
+  document.getElementById("reader").style.display = "none";
+  document.body.style.overflow = "";
+  currentNovel = null;
 }
+
+function updateReaderProgress() {
+  const content = document.getElementById("readerContent");
+  const maxScroll = content.scrollHeight - content.clientHeight;
+
+  const percent = maxScroll > 0
+    ? (content.scrollTop / maxScroll) * 100
+    : 0;
+
+  document.getElementById("readerProgressFill").style.width =
+    percent + "%";
+}
+
+document.getElementById("readerContent").addEventListener(
+  "scroll",
+  function() {
+    updateReaderProgress();
+    saveProgress();
+  }
+);
 
 
 /* =====================================
    FONT SIZE
 ===================================== */
 
-function changeFont(amount) {
+function changeFontSize(amount) {
+  currentFontSize = Math.min(
+    32,
+    Math.max(12, currentFontSize + amount)
+  );
 
-    currentFontSize += amount;
-
-    currentFontSize = Math.max(
-        12,
-        Math.min(32, currentFontSize)
-    );
-
-    updateFontSize();
-}
-
-function updateFontSize() {
-
-    document.getElementById("bookContent").style.fontSize =
-        currentFontSize + "px";
+  document.getElementById("readerContent").style.fontSize =
+    currentFontSize + "px";
 }
 
 
@@ -932,32 +862,104 @@ function updateFontSize() {
 ===================================== */
 
 function toggleDarkMode() {
+  document.body.classList.toggle("dark");
 
-    document.body.classList.toggle("dark");
-
-    const icon =
-        document.querySelector(".icon-btn i");
-
-    if (document.body.classList.contains("dark")) {
-
-        icon.className = "fas fa-sun";
-
-        localStorage.setItem("novelTheme", "dark");
-
-    } else {
-
-        icon.className = "fas fa-moon";
-
-        localStorage.setItem("novelTheme", "light");
-    }
+  localStorage.setItem(
+    "hausaReaderDarkMode",
+    document.body.classList.contains("dark") ? "yes" : "no"
+  );
 }
 
-if (localStorage.getItem("novelTheme") === "dark") {
+if (localStorage.getItem("hausaReaderDarkMode") === "yes") {
+  document.body.classList.add("dark");
+}
 
-    document.body.classList.add("dark");
 
-    document.querySelector(".icon-btn i").className =
-        "fas fa-sun";
+/* =====================================
+   OFFERS API
+===================================== */
+
+async function fetchOffers() {
+  const response = await fetch(OFFER_API, {
+    cache: "no-store"
+  });
+
+  if (!response.ok) {
+    throw new Error("Offers unavailable");
+  }
+
+  const data = await response.json();
+
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data.offers)) return data.offers;
+  if (data.data && Array.isArray(data.data)) return data.data;
+
+  return [];
+}
+
+function getOfferName(offer) {
+  return offer.name || offer.title || offer.anchor || "Special Offer";
+}
+
+function getOfferURL(offer) {
+  return offer.url || offer.link || offer.offer_url || "#";
+}
+
+function getOfferImage(offer) {
+  return offer.network_icon || offer.image || offer.icon || "";
+}
+
+async function loadOffers() {
+  const grid = document.getElementById("offersGrid");
+
+  try {
+    loadedOffers = await fetchOffers();
+    renderOffers();
+  } catch (error) {
+    grid.innerHTML =
+      '<p class="empty-message">Offers are currently unavailable.</p>';
+  }
+}
+
+function renderOffers() {
+  const grid = document.getElementById("offersGrid");
+  grid.innerHTML = "";
+
+  if (!loadedOffers.length) {
+    grid.innerHTML =
+      '<p class="empty-message">No offers available.</p>';
+    return;
+  }
+
+  loadedOffers.forEach(offer => {
+    const card = document.createElement("div");
+    card.className = "offer-card";
+
+    const imageURL = getOfferImage(offer);
+    const name = getOfferName(offer);
+    const url = getOfferURL(offer);
+
+    if (imageURL) {
+      const img = document.createElement("img");
+      img.src = imageURL;
+      img.alt = name;
+      img.loading = "lazy";
+      card.appendChild(img);
+    }
+
+    const title = document.createElement("strong");
+    title.textContent = name;
+    card.appendChild(title);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.textContent = "View Offer";
+    link.target = "_blank";
+    link.rel = "nofollow sponsored noopener";
+    card.appendChild(link);
+
+    grid.appendChild(card);
+  });
 }
 
 
@@ -965,217 +967,80 @@ if (localStorage.getItem("novelTheme") === "dark") {
    STICKY OFFERS
 ===================================== */
 
-const STICKY_OFFER_API = OFFER_API;
-
 async function loadStickyOffers() {
+  const list = document.getElementById("stickyOfferList");
 
-    const container =
-        document.getElementById("stickyOfferList");
-
-    try {
-
-        const response = await fetch(
-            STICKY_OFFER_API + "&t=" + Date.now()
-        );
-
-        if (!response.ok) {
-            throw new Error("Failed to load offers");
-        }
-
-        const data = await response.json();
-
-        const offers = Array.isArray(data)
-            ? data
-            : (data.offers || data.data || []);
-
-        if (!offers.length) {
-
-            container.innerHTML = `
-                <div class="sticky-loading">
-                    No offers available right now.
-                </div>
-            `;
-
-            return;
-        }
-
-        container.innerHTML = "";
-
-        offers.slice(0, 10).forEach(offer => {
-
-            const title =
-                offer.name || offer.title ||
-                offer.anchor || "Special Offer";
-
-            const url =
-                offer.url || offer.link ||
-                offer.offer_url;
-
-            const image =
-                offer.network_icon ||
-                offer.image ||
-                offer.icon || "";
-
-            if (!url) return;
-
-            const card = document.createElement("div");
-            card.className = "sticky-card";
-
-            if (image) {
-
-                const img = document.createElement("img");
-                img.src = image;
-                img.alt = "";
-                img.loading = "lazy";
-                card.appendChild(img);
-            }
-
-            const info = document.createElement("div");
-            info.className = "sticky-info";
-
-            const heading = document.createElement("strong");
-            heading.textContent = title;
-
-            const link = document.createElement("a");
-            link.href = url;
-            link.target = "_blank";
-            link.rel = "nofollow sponsored noopener";
-            link.textContent = "View Offer →";
-
-            info.append(heading, link);
-            card.appendChild(info);
-
-            container.appendChild(card);
-        });
-
-    } catch (error) {
-
-        console.error("Sticky offers error:", error);
-
-        container.innerHTML = `
-            <div class="sticky-loading">
-                Offers are temporarily unavailable.
-            </div>
-        `;
+  try {
+    if (!loadedOffers.length) {
+      loadedOffers = await fetchOffers();
     }
+
+    list.innerHTML = "";
+
+    loadedOffers.slice(0, 10).forEach(offer => {
+      const link = document.createElement("a");
+      link.className = "sticky-card";
+      link.href = getOfferURL(offer);
+      link.target = "_blank";
+      link.rel = "nofollow sponsored noopener";
+
+      const imageURL = getOfferImage(offer);
+
+      if (imageURL) {
+        const img = document.createElement("img");
+        img.src = imageURL;
+        img.alt = "";
+        img.loading = "lazy";
+        link.appendChild(img);
+      }
+
+      const info = document.createElement("div");
+      info.className = "sticky-info";
+      info.textContent = getOfferName(offer);
+
+      link.appendChild(info);
+      list.appendChild(link);
+    });
+
+    if (!list.children.length) {
+      list.textContent = "No offers available.";
+    }
+
+  } catch (error) {
+    list.textContent = "Offers are currently unavailable.";
+  }
 }
-
-
-/* =====================================
-   CLOSE STICKY OFFERS
-===================================== */
 
 function closeStickyOffers() {
-
-    document.getElementById("stickyOffers").style.display =
-        "none";
-
-    document.body.style.paddingBottom = "0";
+  document.getElementById("stickyOffers").style.display = "none";
+  document.body.style.paddingBottom = "0";
 }
-
-
-/* =====================================
-   YEAR
-===================================== */
-
-document.getElementById("year").textContent =
-    new Date().getFullYear();
 
 
 /* =====================================
    START WEBSITE
 ===================================== */
 
-loadNovels();
-loadOffers();
-loadStickyOffers();
+document.getElementById("footerYear").textContent =
+  new Date().getFullYear();
 
-(async function checkVPN() {
-  const blocker = document.getElementById("vpnBlocker");
+(async function startWebsite() {
+  const allowed = await checkVPN();
 
-  // Hide the page until the VPN check finishes
-  document.documentElement.style.visibility = "hidden";
+  if (!allowed) return;
 
-  try {
-    const response = await fetch(
-      "https://ipapi.co/json/",
-      { cache: "no-store" }
-    );
+  savedProgress = getSavedProgress();
 
-    if (!response.ok) throw new Error("VPN check failed");
+  updateContinueCard();
 
-    const data = await response.json();
+  // Start loading novels one after another.
+  loadNovels();
 
-    if (data.proxy === true || data.threat === true) {
-      blocker.style.display = "flex";
-    } else {
-      blocker.style.display = "none";
-      document.documentElement.style.visibility = "visible";
-    }
-
-  } catch (error) {
-    // Fail closed: do not show the page if checking fails
-    blocker.style.display = "flex";
-    blocker.querySelector("h2").textContent = "Connection Check Failed";
-    blocker.querySelector("p").textContent =
-      "We couldn't verify your connection. Please try again.";
-    document.querySelector("#vpnBlocker button").textContent = "Try Again";
-  }
+  // Load offers.
+  loadOffers();
+  loadStickyOffers();
 })();
-
 </script>
-
-<div id="vpnBlocker" style="display:none;">
-  <div class="vpn-box">
-    <div class="vpn-icon">🛡️</div>
-    <h2>VPN or Proxy Detected</h2>
-    <p>
-      Please disable your VPN or Proxy connection
-      and reload this page to continue reading.
-    </p>
-    <button onclick="location.reload()">I've Disabled It — Reload</button>
-  </div>
-</div>
-
-<style>
-#vpnBlocker {
-  position: fixed;
-  inset: 0;
-  z-index: 9999999;
-  background: #080d18;
-  color: white;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-.vpn-box {
-  max-width: 420px;
-  width: 100%;
-  padding: 35px 22px;
-  background: #151e30;
-  border: 1px solid #34425c;
-  border-radius: 18px;
-}
-.vpn-icon { font-size: 55px; }
-.vpn-box h2 { color: #ff5252; }
-.vpn-box p {
-  color: #d1d5db;
-  line-height: 1.7;
-}
-.vpn-box button {
-  background: #e53935;
-  color: white;
-  border: 0;
-  padding: 14px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-}
-</style>
 
 </body>
 </html>
