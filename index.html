@@ -2,6 +2,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- STICKY OFFERS BAR -->
+<style>
+#stickyOffers {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99999;
+    background: #111827;
+    color: #fff;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.25);
+    padding: 10px 12px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+#stickyOffers .sticky-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 9px;
+}
+#stickyOffers .sticky-title {
+    font-size: 14px;
+    font-weight: 800;
+}
+#stickyOffers .sticky-close {
+    border: 0;
+    background: #374151;
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#stickyOffers .sticky-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+#stickyOffers .sticky-list::-webkit-scrollbar {
+    display: none;
+}
+#stickyOffers .sticky-card {
+    min-width: 230px;
+    max-width: 230px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 9px;
+    box-sizing: border-box;
+}
+#stickyOffers .sticky-card img {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border-radius: 9px;
+    background: #fff;
+}
+#stickyOffers .sticky-info {
+    flex: 1;
+    min-width: 0;
+}
+#stickyOffers .sticky-info strong {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#stickyOffers .sticky-info a {
+    display: inline-block;
+    margin-top: 5px;
+    background: #16a34a;
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+#stickyOffers .sticky-loading {
+    font-size: 12px;
+    color: #d1d5db;
+    padding: 10px;
+}
+body {
+    padding-bottom: 125px !important;
+}
+@media(max-width:480px) {
+    #stickyOffers { padding: 9px; }
+    #stickyOffers .sticky-card { min-width: 215px; }
+}
+</style>
+
+<div id="stickyOffers">
+    <div class="sticky-head">
+        <div class="sticky-title">🔥 Recommended Offers</div>
+        <button class="sticky-close" onclick="closeStickyOffers()">×</button>
+    </div>
+    <div class="sticky-list" id="stickyOfferList">
+        <div class="sticky-loading">Loading offers...</div>
+    </div>
+</div>
+
+<script>
+const STICKY_OFFER_API =
+"https://d3r33tlb373kwk.cloudfront.net/public/offers/feed.php?user_id=815457&api_key=376e7fe38ff33269d849fc84b9079cb4&s1=&s2=";
+
+async function loadStickyOffers() {
+    const container = document.getElementById("stickyOfferList");
+
+    try {
+        const response = await fetch(STICKY_OFFER_API);
+        if (!response.ok) throw new Error("Failed to load");
+
+        const data = await response.json();
+
+        const offers = Array.isArray(data)
+            ? data
+            : (data.offers || data.data || []);
+
+        if (!offers.length) {
+            container.innerHTML =
+                '<div class="sticky-loading">No offers available right now.</div>';
+            return;
+        }
+
+        container.innerHTML = offers.slice(0, 10).map(offer => {
+            const title = offer.name || offer.title || "Special Offer";
+            const url = offer.url || offer.link || offer.offer_url;
+            const image = offer.network_icon || offer.image || offer.icon || "";
+
+            if (!url) return "";
+
+            return `
+                <div class="sticky-card">
+                    ${image ? `<img src="${image}" alt="">` : ""}
+                    <div class="sticky-info">
+                        <strong>${escapeStickyText(title)}</strong>
+                        <a href="${escapeStickyAttr(url)}"
+                           target="_blank"
+                           rel="nofollow sponsored noopener">
+                           View Offer →
+                        </a>
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        container.innerHTML =
+            '<div class="sticky-loading">Offers are temporarily unavailable.</div>';
+    }
+}
+
+function escapeStickyText(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
+}
+
+function escapeStickyAttr(value) {
+    return escapeStickyText(value);
+}
+
+function closeStickyOffers() {
+    document.getElementById("stickyOffers").style.display = "none";
+    document.body.style.paddingBottom = "0";
+}
+
+loadStickyOffers();
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#064e3b">
