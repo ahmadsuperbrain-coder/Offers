@@ -169,6 +169,36 @@ body {
     #stickyOffers { padding: 9px; }
     #stickyOffers .sticky-card { min-width: 215px; }
 }
+
+.loading-progress {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    grid-column: 1 / -1;
+}
+
+.loading-progress p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 9px;
+}
+
+.loading-progress-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.loading-progress-fill {
+    height: 100%;
+    width: 0;
+    background: var(--primary);
+    transition: width .25s;
+}
+
 </style>
 </head>
 
@@ -372,52 +402,90 @@ function saveProgress(data) {
 
 /* LOAD NOVELS */
 
-async function loadNovels() {
 
+async function loadNovels() {
     const bookList = document.getElementById("bookList");
+    const novelCount = document.getElementById("novelCount");
+
+    loadedNovels = [];
+
+    let completed = 0;
+    let failed = 0;
+    const total = NOVEL_FILES.length;
 
     bookList.innerHTML = `
-        <div class="status">
-            <i class="fas fa-spinner fa-spin"></i> Loading novels...
+        <div class="loading-progress">
+            <p id="loadingText">Preparing novels...</p>
+            <div class="loading-progress-track">
+                <div class="loading-progress-fill" id="loadingFill"></div>
+            </div>
         </div>
     `;
 
-    const results = await Promise.all(
-        NOVEL_FILES.map(async file => {
-            try {
-                const response = await fetch(
-                    encodeURIComponent(file) + "?t=" + Date.now()
-                );
+    novelCount.textContent = `0 / ${total} loaded`;
 
-                if (!response.ok) {
-                    throw new Error("HTTP " + response.status);
-                }
+    for (const file of NOVEL_FILES) {
+        try {
+            // Load one novel at a time
+            const response = await fetch(
+                encodeURIComponent(file) + "?t=" + Date.now()
+            );
 
-                const content = await response.text();
-
-                return {
-                    title: file.replace(/\.txt$/i, ""),
-                    filename: file,
-                    content,
-                    success: true
-                };
-
-            } catch (error) {
-                console.error("Unable to load:", file, error);
-                return {
-                    title: file.replace(/\.txt$/i, ""),
-                    filename: file,
-                    success: false
-                };
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
             }
-        })
-    );
 
-    loadedNovels = results.filter(book => book.success);
+            const content = await response.text();
+
+            loadedNovels.push({
+                title: file.replace(/\.(txt|doc)$/i, ""),
+                filename: file,
+                content,
+                success: true
+            });
+
+            completed++;
+
+        } catch (error) {
+            console.error("Failed to load:", file, error);
+            failed++;
+            completed++;
+        }
+
+        // Update progress
+        const percent = Math.round((completed / total) * 100);
+
+        const loadingText = document.getElementById("loadingText");
+        const loadingFill = document.getElementById("loadingFill");
+
+        if (loadingText) {
+            loadingText.textContent =
+                `Loading novels: ${completed} of ${total} (${percent}%)`;
+        }
+
+        if (loadingFill) {
+            loadingFill.style.width = percent + "%";
+        }
+
+        novelCount.textContent = `${loadedNovels.length} novels loaded`;
+
+        // Display each novel immediately after loading
+        renderBooks();
+
+        // Allow the browser to update the screen
+        await new Promise(resolve => setTimeout(resolve, 30));
+    }
 
     renderBooks();
     updateContinueCard();
+
+    if (failed > 0) {
+        console.log(`${failed} novels could not be loaded.`);
+    }
+
+    console.log(`Finished: ${loadedNovels.length} / ${total} novels loaded.`);
 }
+
 
 /* DISPLAY NOVELS */
 
