@@ -282,9 +282,9 @@ body {
 </div>
 
 <script>
-
-/* NOVEL FILES */
-
+/* =====================================
+   NOVEL FILES
+===================================== */
 
 const NOVEL_FILES = [
     "ASP ZARAH 1 By Jasmine (1).txt",
@@ -372,12 +372,17 @@ const NOVEL_FILES = [
 ];
 
 
-/* OFFERS API */
+/* =====================================
+   OFFERS API
+===================================== */
 
 const OFFER_API =
 "https://d3r33tlb373kwk.cloudfront.net/public/offers/feed.php?user_id=815457&api_key=376e7fe38ff33269d849fc84b9079cb4&s1=&s2=";
 
-/* VARIABLES */
+
+/* =====================================
+   VARIABLES
+===================================== */
 
 let loadedNovels = [];
 let loadedOffers = [];
@@ -386,7 +391,10 @@ let currentFontSize = 18;
 
 const SAVE_KEY = "hausaNovelReadingProgress";
 
-/* LOAD SAVED PROGRESS */
+
+/* =====================================
+   SAVED READING PROGRESS
+===================================== */
 
 function getSavedProgress() {
     try {
@@ -400,10 +408,13 @@ function saveProgress(data) {
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
 
-/* LOAD NOVELS */
 
+/* =====================================
+   SEQUENTIAL NOVEL LOADER
+===================================== */
 
 async function loadNovels() {
+
     const bookList = document.getElementById("bookList");
     const novelCount = document.getElementById("novelCount");
 
@@ -411,13 +422,16 @@ async function loadNovels() {
 
     let completed = 0;
     let failed = 0;
+
     const total = NOVEL_FILES.length;
 
     bookList.innerHTML = `
-        <div class="loading-progress">
+        <div class="loading-progress" style="grid-column:1/-1">
             <p id="loadingText">Preparing novels...</p>
+
             <div class="loading-progress-track">
-                <div class="loading-progress-fill" id="loadingFill"></div>
+                <div class="loading-progress-fill"
+                     id="loadingFill"></div>
             </div>
         </div>
     `;
@@ -425,8 +439,9 @@ async function loadNovels() {
     novelCount.textContent = `0 / ${total} loaded`;
 
     for (const file of NOVEL_FILES) {
+
         try {
-            // Load one novel at a time
+
             const response = await fetch(
                 encodeURIComponent(file) + "?t=" + Date.now()
             );
@@ -440,23 +455,28 @@ async function loadNovels() {
             loadedNovels.push({
                 title: file.replace(/\.(txt|doc)$/i, ""),
                 filename: file,
-                content,
+                content: content,
                 success: true
             });
 
-            completed++;
-
         } catch (error) {
-            console.error("Failed to load:", file, error);
+
+            console.error("Unable to load:", file, error);
             failed++;
-            completed++;
+
         }
 
-        // Update progress
-        const percent = Math.round((completed / total) * 100);
+        completed++;
 
-        const loadingText = document.getElementById("loadingText");
-        const loadingFill = document.getElementById("loadingFill");
+        const percent = Math.round(
+            (completed / total) * 100
+        );
+
+        const loadingText =
+            document.getElementById("loadingText");
+
+        const loadingFill =
+            document.getElementById("loadingFill");
 
         if (loadingText) {
             loadingText.textContent =
@@ -467,32 +487,38 @@ async function loadNovels() {
             loadingFill.style.width = percent + "%";
         }
 
-        novelCount.textContent = `${loadedNovels.length} novels loaded`;
+        novelCount.textContent =
+            `${loadedNovels.length} novels loaded`;
 
-        // Display each novel immediately after loading
         renderBooks();
 
-        // Allow the browser to update the screen
-        await new Promise(resolve => setTimeout(resolve, 30));
+        // Allow browser to update the screen
+        await new Promise(resolve =>
+            setTimeout(resolve, 30)
+        );
     }
 
     renderBooks();
     updateContinueCard();
 
-    if (failed > 0) {
-        console.log(`${failed} novels could not be loaded.`);
-    }
-
-    console.log(`Finished: ${loadedNovels.length} / ${total} novels loaded.`);
+    console.log(
+        `Loading completed: ${loadedNovels.length} successful, ${failed} failed.`
+    );
 }
 
 
-/* DISPLAY NOVELS */
+/* =====================================
+   DISPLAY NOVELS
+===================================== */
 
 function renderBooks() {
 
-    const bookList = document.getElementById("bookList");
-    const search = document.getElementById("searchInput").value.toLowerCase().trim();
+    const bookList =
+        document.getElementById("bookList");
+
+    const search =
+        document.getElementById("searchInput")
+        .value.toLowerCase().trim();
 
     const filtered = loadedNovels.filter(book =>
         book.title.toLowerCase().includes(search)
@@ -502,9 +528,11 @@ function renderBooks() {
         loadedNovels.length + " novels";
 
     if (!filtered.length) {
+
         bookList.innerHTML = `
             <div class="status">No novels found.</div>
         `;
+
         return;
     }
 
@@ -513,69 +541,101 @@ function renderBooks() {
     filtered.forEach(book => {
 
         const index = loadedNovels.indexOf(book);
+
         const card = document.createElement("div");
         card.className = "book-card";
 
         const icon = document.createElement("div");
         icon.className = "book-icon";
-        icon.innerHTML = '<i class="fas fa-book"></i>';
+        icon.innerHTML =
+            '<i class="fas fa-book"></i>';
 
         const title = document.createElement("h3");
         title.textContent = book.title;
 
         const desc = document.createElement("p");
-        desc.textContent = book.content.length + " characters";
+        desc.textContent =
+            book.content.length + " characters";
 
         const button = document.createElement("button");
         button.className = "read-btn";
-        button.innerHTML = '<i class="fas fa-book-open"></i> Read Novel';
-        button.addEventListener("click", () => openNovel(index, false));
+        button.innerHTML =
+            '<i class="fas fa-book-open"></i> Read Novel';
+
+        button.addEventListener("click", () =>
+            openNovel(index, false)
+        );
 
         card.append(icon, title, desc, button);
+
         bookList.appendChild(card);
     });
 }
 
-/* LOAD OFFERS */
+
+/* =====================================
+   LOAD OFFERS
+===================================== */
 
 async function loadOffers() {
 
-    const offerList = document.getElementById("offerList");
+    const offerList =
+        document.getElementById("offerList");
 
     try {
-        const response = await fetch(OFFER_API + "&t=" + Date.now());
 
-        if (!response.ok) throw new Error("HTTP " + response.status);
+        const response = await fetch(
+            OFFER_API + "&t=" + Date.now()
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
 
         const data = await response.json();
 
         let offers = [];
 
-        if (Array.isArray(data)) offers = data;
-        else if (Array.isArray(data.offers)) offers = data.offers;
-        else if (Array.isArray(data.data)) offers = data.data;
+        if (Array.isArray(data)) {
+            offers = data;
+        } else if (Array.isArray(data.offers)) {
+            offers = data.offers;
+        } else if (Array.isArray(data.data)) {
+            offers = data.data;
+        }
 
         loadedOffers = offers.filter(offer =>
-            offer && (offer.name || offer.title || offer.anchor) &&
+            offer &&
+            (offer.name || offer.title || offer.anchor) &&
             (offer.url || offer.link || offer.offer_url)
         );
 
         renderOffers();
 
     } catch (error) {
+
         console.error("Offer loading error:", error);
-        document.getElementById("offerCount").textContent = "Unavailable";
+
+        document.getElementById("offerCount").textContent =
+            "Unavailable";
+
         offerList.innerHTML = `
-            <div class="status">Offers are temporarily unavailable.</div>
+            <div class="status">
+                Offers are temporarily unavailable.
+            </div>
         `;
     }
 }
 
-/* DISPLAY OFFERS */
+
+/* =====================================
+   DISPLAY OFFERS
+===================================== */
 
 function renderOffers() {
 
-    const offerList = document.getElementById("offerList");
+    const offerList =
+        document.getElementById("offerList");
 
     document.getElementById("offerCount").textContent =
         loadedOffers.length + " offers";
@@ -583,16 +643,35 @@ function renderOffers() {
     offerList.innerHTML = "";
 
     if (!loadedOffers.length) {
-        offerList.innerHTML = `<div class="status">No offers available right now.</div>`;
+
+        offerList.innerHTML = `
+            <div class="status">
+                No offers available right now.
+            </div>
+        `;
+
         return;
     }
 
     loadedOffers.forEach(offer => {
 
-        const name = offer.name || offer.title || offer.anchor || "Special Offer";
-        const description = offer.description || offer.conversion || "Discover this special offer and learn more.";
-        const image = offer.network_icon || offer.image || offer.icon || "";
-        const url = offer.url || offer.link || offer.offer_url;
+        const name =
+            offer.name || offer.title ||
+            offer.anchor || "Special Offer";
+
+        const description =
+            offer.description ||
+            offer.conversion ||
+            "Discover this special offer and learn more.";
+
+        const image =
+            offer.network_icon ||
+            offer.image ||
+            offer.icon || "";
+
+        const url =
+            offer.url || offer.link ||
+            offer.offer_url;
 
         const card = document.createElement("div");
         card.className = "offer-card";
@@ -604,17 +683,23 @@ function renderOffers() {
         card.appendChild(label);
 
         if (image) {
+
             const img = document.createElement("img");
             img.className = "offer-image";
             img.src = image;
             img.alt = name;
             img.loading = "lazy";
             img.onerror = () => img.remove();
+
             card.appendChild(img);
+
         } else {
+
             const icon = document.createElement("div");
             icon.className = "book-icon";
-            icon.innerHTML = '<i class="fas fa-gift"></i>';
+            icon.innerHTML =
+                '<i class="fas fa-gift"></i>';
+
             card.appendChild(icon);
         }
 
@@ -628,7 +713,9 @@ function renderOffers() {
         button.className = "offer-btn";
         button.href = url;
         button.target = "_blank";
-        button.rel = "nofollow sponsored noopener noreferrer";
+        button.rel =
+            "nofollow sponsored noopener noreferrer";
+
         button.textContent = "View Offer";
 
         card.append(title, desc, button);
@@ -636,52 +723,74 @@ function renderOffers() {
     });
 }
 
-/* OPEN NOVEL */
+
+/* =====================================
+   OPEN NOVEL
+===================================== */
 
 function openNovel(index, resume = false) {
 
     const novel = loadedNovels[index];
+
     if (!novel) return;
 
     currentNovel = novel;
 
-    document.getElementById("readerTitle").textContent = novel.title;
+    document.getElementById("readerTitle").textContent =
+        novel.title;
 
-    const content = document.getElementById("bookContent");
+    const content =
+        document.getElementById("bookContent");
+
     content.textContent = novel.content;
 
-    document.getElementById("reader").style.display = "block";
+    const reader =
+        document.getElementById("reader");
+
+    reader.style.display = "block";
+
     document.body.style.overflow = "hidden";
 
     currentFontSize = 18;
     updateFontSize();
 
     requestAnimationFrame(() => {
-        const saved = getSavedProgress();
-        const position = resume && saved[novel.filename]
-            ? saved[novel.filename].position || 0
-            : 0;
 
-        document.getElementById("reader").scrollTop = position;
+        const saved = getSavedProgress();
+
+        const position =
+            resume && saved[novel.filename]
+                ? saved[novel.filename].position || 0
+                : 0;
+
+        reader.scrollTop = position;
+
         updateReaderProgress();
     });
 }
 
-/* SAVE CURRENT READING POSITION */
+
+/* =====================================
+   SAVE READING POSITION
+===================================== */
 
 function updateReaderProgress() {
 
     if (!currentNovel) return;
 
-    const reader = document.getElementById("reader");
-    const content = document.getElementById("bookContent");
+    const reader =
+        document.getElementById("reader");
 
-    const maxScroll = reader.scrollHeight - reader.clientHeight;
+    const maxScroll =
+        reader.scrollHeight - reader.clientHeight;
 
     const position = reader.scrollTop;
 
     const percentage = maxScroll > 0
-        ? Math.min(100, Math.round((position / maxScroll) * 100))
+        ? Math.min(
+            100,
+            Math.round((position / maxScroll) * 100)
+          )
         : 0;
 
     document.getElementById("readerProgress").style.width =
@@ -703,28 +812,38 @@ function updateReaderProgress() {
     updateContinueCard();
 }
 
-/* CONTINUE CARD */
+
+/* =====================================
+   CONTINUE READING CARD
+===================================== */
 
 function updateContinueCard() {
 
     const saved = getSavedProgress();
+
     const lastFile = saved.lastNovel;
 
-    const card = document.getElementById("continueCard");
+    const card =
+        document.getElementById("continueCard");
 
     if (!lastFile || !saved[lastFile]) {
+
         card.style.display = "none";
         return;
     }
 
-    const novel = loadedNovels.find(book => book.filename === lastFile);
+    const novel = loadedNovels.find(book =>
+        book.filename === lastFile
+    );
 
     if (!novel) {
+
         card.style.display = "none";
         return;
     }
 
-    const progress = saved[lastFile].percentage || 0;
+    const progress =
+        saved[lastFile].percentage || 0;
 
     card.style.display = "block";
 
@@ -738,15 +857,19 @@ function updateContinueCard() {
         progress + "% completed";
 }
 
-/* CONTINUE READING */
+
+/* =====================================
+   CONTINUE READING
+===================================== */
 
 function continueReading() {
 
     const saved = getSavedProgress();
+
     const lastFile = saved.lastNovel;
 
-    const index = loadedNovels.findIndex(
-        book => book.filename === lastFile
+    const index = loadedNovels.findIndex(book =>
+        book.filename === lastFile
     );
 
     if (index !== -1) {
@@ -754,7 +877,10 @@ function continueReading() {
     }
 }
 
-/* SAVE WHILE SCROLLING */
+
+/* =====================================
+   READER SCROLL EVENT
+===================================== */
 
 document.getElementById("reader").addEventListener(
     "scroll",
@@ -762,81 +888,99 @@ document.getElementById("reader").addEventListener(
     { passive: true }
 );
 
-/* CLOSE READER */
+
+/* =====================================
+   CLOSE READER
+===================================== */
 
 function closeReader() {
+
     updateReaderProgress();
-    document.getElementById("reader").style.display = "none";
+
+    document.getElementById("reader").style.display =
+        "none";
+
     document.body.style.overflow = "auto";
 }
 
-/* FONT SIZE */
+
+/* =====================================
+   FONT SIZE
+===================================== */
 
 function changeFont(amount) {
+
     currentFontSize += amount;
-    currentFontSize = Math.max(12, Math.min(32, currentFontSize));
+
+    currentFontSize = Math.max(
+        12,
+        Math.min(32, currentFontSize)
+    );
+
     updateFontSize();
 }
 
 function updateFontSize() {
+
     document.getElementById("bookContent").style.fontSize =
         currentFontSize + "px";
 }
 
-/* DARK MODE */
+
+/* =====================================
+   DARK MODE
+===================================== */
 
 function toggleDarkMode() {
 
     document.body.classList.toggle("dark");
 
-    const icon = document.querySelector(".icon-btn i");
+    const icon =
+        document.querySelector(".icon-btn i");
 
     if (document.body.classList.contains("dark")) {
+
         icon.className = "fas fa-sun";
+
         localStorage.setItem("novelTheme", "dark");
+
     } else {
+
         icon.className = "fas fa-moon";
+
         localStorage.setItem("novelTheme", "light");
     }
 }
 
 if (localStorage.getItem("novelTheme") === "dark") {
+
     document.body.classList.add("dark");
-    document.querySelector(".icon-btn i").className = "fas fa-sun";
+
+    document.querySelector(".icon-btn i").className =
+        "fas fa-sun";
 }
 
-/* YEAR */
 
-document.getElementById("year").textContent =
-    new Date().getFullYear();
+/* =====================================
+   STICKY OFFERS
+===================================== */
 
-/* START */
-
-loadNovels();
-loadOffers();
-
-</script>
-
-<div id="stickyOffers">
-    <div class="sticky-head">
-        <div class="sticky-title">🔥 Recommended Offers</div>
-        <button class="sticky-close" onclick="closeStickyOffers()">×</button>
-    </div>
-    <div class="sticky-list" id="stickyOfferList">
-        <div class="sticky-loading">Loading offers...</div>
-    </div>
-</div>
-
-<script>
-const STICKY_OFFER_API =
-"https://d3r33tlb373kwk.cloudfront.net/public/offers/feed.php?user_id=815457&api_key=376e7fe38ff33269d849fc84b9079cb4&s1=&s2=";
+const STICKY_OFFER_API = OFFER_API;
 
 async function loadStickyOffers() {
-    const container = document.getElementById("stickyOfferList");
+
+    const container =
+        document.getElementById("stickyOfferList");
 
     try {
-        const response = await fetch(STICKY_OFFER_API);
-        if (!response.ok) throw new Error("Failed to load");
+
+        const response = await fetch(
+            STICKY_OFFER_API + "&t=" + Date.now()
+        );
+
+        if (!response.ok) {
+            throw new Error("Failed to load offers");
+        }
 
         const data = await response.json();
 
@@ -845,59 +989,107 @@ async function loadStickyOffers() {
             : (data.offers || data.data || []);
 
         if (!offers.length) {
-            container.innerHTML =
-                '<div class="sticky-loading">No offers available right now.</div>';
+
+            container.innerHTML = `
+                <div class="sticky-loading">
+                    No offers available right now.
+                </div>
+            `;
+
             return;
         }
 
-        container.innerHTML = offers.slice(0, 10).map(offer => {
-            const title = offer.name || offer.title || "Special Offer";
-            const url = offer.url || offer.link || offer.offer_url;
-            const image = offer.network_icon || offer.image || offer.icon || "";
+        container.innerHTML = "";
 
-            if (!url) return "";
+        offers.slice(0, 10).forEach(offer => {
 
-            return `
-                <div class="sticky-card">
-                    ${image ? `<img src="${image}" alt="">` : ""}
-                    <div class="sticky-info">
-                        <strong>${escapeStickyText(title)}</strong>
-                        <a href="${escapeStickyAttr(url)}"
-                           target="_blank"
-                           rel="nofollow sponsored noopener">
-                           View Offer →
-                        </a>
-                    </div>
-                </div>
-            `;
-        }).join("");
+            const title =
+                offer.name || offer.title ||
+                offer.anchor || "Special Offer";
+
+            const url =
+                offer.url || offer.link ||
+                offer.offer_url;
+
+            const image =
+                offer.network_icon ||
+                offer.image ||
+                offer.icon || "";
+
+            if (!url) return;
+
+            const card = document.createElement("div");
+            card.className = "sticky-card";
+
+            if (image) {
+
+                const img = document.createElement("img");
+                img.src = image;
+                img.alt = "";
+                img.loading = "lazy";
+                card.appendChild(img);
+            }
+
+            const info = document.createElement("div");
+            info.className = "sticky-info";
+
+            const heading = document.createElement("strong");
+            heading.textContent = title;
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            link.rel = "nofollow sponsored noopener";
+            link.textContent = "View Offer →";
+
+            info.append(heading, link);
+            card.appendChild(info);
+
+            container.appendChild(card);
+        });
 
     } catch (error) {
-        container.innerHTML =
-            '<div class="sticky-loading">Offers are temporarily unavailable.</div>';
+
+        console.error("Sticky offers error:", error);
+
+        container.innerHTML = `
+            <div class="sticky-loading">
+                Offers are temporarily unavailable.
+            </div>
+        `;
     }
 }
 
-function escapeStickyText(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-    }[char]));
-}
 
-function escapeStickyAttr(value) {
-    return escapeStickyText(value);
-}
+/* =====================================
+   CLOSE STICKY OFFERS
+===================================== */
 
 function closeStickyOffers() {
-    document.getElementById("stickyOffers").style.display = "none";
+
+    document.getElementById("stickyOffers").style.display =
+        "none";
+
     document.body.style.paddingBottom = "0";
 }
 
+
+/* =====================================
+   YEAR
+===================================== */
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+
+/* =====================================
+   START WEBSITE
+===================================== */
+
+loadNovels();
+loadOffers();
 loadStickyOffers();
+
 </script>
 </body>
 </html>
