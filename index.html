@@ -339,6 +339,31 @@ footer{
     grid-template-columns:repeat(2,minmax(0,1fr));
   }
 }
+/* Sticky offers inside novel reader */
+#stickyOffers {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10002;
+  background: var(--card);
+  border-top: 2px solid var(--primary);
+  box-shadow: 0 -4px 18px #0003;
+  padding: 9px 12px 12px;
+  transition: transform .3s ease;
+}
+
+#stickyOffers.hidden {
+  display: none;
+}
+
+#reader {
+  padding-bottom: 145px;
+}
+
+#readerContent {
+  padding-bottom: 160px;
+}
 </style>
 </head>
 
@@ -1110,8 +1135,35 @@ function renderOffers() {
 
 
 /* =====================================
-   STICKY OFFERS
+   STICKY OFFERS - AUTO REAPPEAR 30s
 ===================================== */
+
+let stickyTimer = null;
+let stickyClosed = false;
+
+function showStickyOffers() {
+  const sticky = document.getElementById("stickyOffers");
+
+  sticky.style.display = "block";
+  stickyClosed = false;
+}
+
+function hideStickyOffers() {
+  const sticky = document.getElementById("stickyOffers");
+
+  sticky.style.display = "none";
+  stickyClosed = true;
+
+  clearTimeout(stickyTimer);
+
+  stickyTimer = setTimeout(() => {
+    showStickyOffers();
+  }, 30000);
+}
+
+function closeStickyOffers() {
+  hideStickyOffers();
+}
 
 async function loadStickyOffers() {
   const list = document.getElementById("stickyOfferList");
@@ -1125,6 +1177,7 @@ async function loadStickyOffers() {
 
     loadedOffers.slice(0, 10).forEach(offer => {
       const link = document.createElement("a");
+
       link.className = "sticky-card";
       link.href = getOfferURL(offer);
       link.target = "_blank";
@@ -1157,12 +1210,22 @@ async function loadStickyOffers() {
   }
 }
 
-function closeStickyOffers() {
-  document.getElementById("stickyOffers").style.display = "none";
-  document.body.style.paddingBottom = "0";
+/* Show offers again after every 30 seconds */
+function startStickyOfferTimer() {
+  clearTimeout(stickyTimer);
+
+  stickyTimer = setTimeout(() => {
+    showStickyOffers();
+    startStickyOfferTimer();
+  }, 30000);
 }
 
-
+/* Initialize */
+(async function initializeStickyOffers() {
+  await loadStickyOffers();
+  showStickyOffers();
+  startStickyOfferTimer();
+})();
 /* =====================================
    START WEBSITE
 ===================================== */
@@ -1184,8 +1247,7 @@ document.getElementById("footerYear").textContent =
 
   // Load offers.
   loadOffers();
-  loadStickyOffers();
-})();
+ })();
 
 /* =====================================
    BACK BUTTON EXIT CONFIRMATION
